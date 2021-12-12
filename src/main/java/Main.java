@@ -76,14 +76,14 @@ public class Main {
      * Основной метод для проведения вычислительного эксперимента с вычислением погрешностей различных сумм
      * @param leftLimit левая граница диапазона чисел, генирирующихся для исходного массива чисел
      * @param rightLimit правая граница диапазона чисел, генирирующихся для исходного массива чисел
-     * @param amountOfTerms количество слагаемых
+     * @param amountOfSummands количество слагаемых
      * @param counter переменная-счетник для заполнения таблицы результатов
      * @param data двумерный массив, отвечающий за ячейки таблицы результатов
      */
-    static void experimentSum(double leftLimit, double rightLimit, int amountOfTerms, int counter, String[][] data) {
+    static void experimentSum(double leftLimit, double rightLimit, int amountOfSummands, int counter, String[][] data) {
 
         /** Генерация массива случайных чисел и создание его копии */
-        Double[] arr = generateArray(leftLimit, rightLimit, amountOfTerms);
+        Double[] arr = generateArray(leftLimit, rightLimit, amountOfSummands);
         Double[] arrCopy = arr.clone();
 
         /** Расчет точной суммы и трех приближенных */
@@ -98,7 +98,7 @@ public class Main {
         double deltaSortedDesc = Math.abs(sumSortedDesc - sumExact);
 
         /** Заполнение данных таблицы */
-        data[counter][0] = String.valueOf(amountOfTerms);
+        data[counter][0] = String.valueOf(amountOfSummands);
         data[counter][1] = String.valueOf(deltaUnsorted);
         data[counter][2] = String.valueOf(deltaSortedAsc);
         data[counter][3] = String.valueOf(deltaSortedDesc);
