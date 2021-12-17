@@ -18,7 +18,7 @@ public class Table extends JFrame {
         table.getTableHeader().setFont(new Font("Serif", Font.PLAIN, 22));
         table.setFont(new Font("Serif", Font.PLAIN, 22));
         table.setRowHeight(table.getRowHeight() + 10);
-        table.setRowMargin(table.getRowMargin() + 5);
+        table.setRowMargin(table.getRowMargin() - 5);
 
         // Настройка заголовков таблицы
         JTableHeader header = table.getTableHeader();
@@ -30,7 +30,7 @@ public class Table extends JFrame {
         getContentPane().add(new JScrollPane(table));
 
         JFrame f = new JFrame();
-        f.setSize(1200, 700);
+        f.setSize(1800, 1000);
         f.add(new JScrollPane(table));
         f.setVisible(true);
     }

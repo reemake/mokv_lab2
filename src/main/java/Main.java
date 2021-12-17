@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
@@ -13,7 +14,7 @@ public class Main {
      */
     static Double[] generateArray(double leftLimit, double rightLimit, int amountOfNumbers) {
         Double[] arr = new Double[amountOfNumbers];
-        Random random = new Random(1);
+        Random random = new Random();
         for (int i = 0; i < amountOfNumbers; i++) {
             arr[i] = random.nextDouble(rightLimit - leftLimit) + leftLimit;
         }
@@ -34,8 +35,8 @@ public class Main {
 
     /**
      * Процедура вычисления приближенного значения суммы чисел, взятых в случайном порядке
-     * @param arr неотсортированный массив чисел двойной точности, преобразуемый в процессе выполнения процедуры в массив чисел одинарной точности
-     * @return приближенное значение суммы чисел, взятых в случайном порядке
+     * @param arr неотсортированный массив чисел двойной точности
+     * @return значение суммы (одинарной точности) чисел, взятых в случайном порядке
      */
     static float sumUnsorted(Double []arr) {
         float sum = 0.0f;
@@ -46,8 +47,8 @@ public class Main {
 
     /**
      * Процедура вычисления приближенного значения суммы чисел, взятых в порядке возрастания
-     * @param arr неотсортированный массив чисел двойной точности, преобразуемый в процессе выполнения процедуры в массив чисел одинарной точности, отсортированный в порядке возрастания
-     * @return приближенное значение суммы чисел, взятых в порядке возрастания
+     * @param arr неотсортированный массив чисел двойной точности
+     * @return значение суммы (одинарной точности) чисел, взятых в порядке возрастания
      */
     static float sumSortedAsc(Double []arr) {
         Arrays.sort(arr);
@@ -60,8 +61,8 @@ public class Main {
 
     /**
      * Процедура вычисления приближенного значения суммы чисел, взятых в порядке убывания
-     * @param arr неотсортированный массив чисел двойной точности, преобразуемый в процессе выполнения процедуры в массив чисел одинарной точности, отсортированный в порядке убывания
-     * @return приближенное значение суммы чисел, взятых в порядке убывания
+     * @param arr неотсортированный массив чисел двойной точности
+     * @return значение суммы (одинарной точности) чисел, взятых в порядке убывания
      */
     static float sumSortedDesc(Double []arr) {
         Arrays.sort(arr, Collections.reverseOrder());
@@ -102,6 +103,7 @@ public class Main {
         data[counter][1] = String.valueOf(deltaUnsorted);
         data[counter][2] = String.valueOf(deltaSortedAsc);
         data[counter][3] = String.valueOf(deltaSortedDesc);
+        data[counter][4] = String.valueOf(numOfMin(deltaUnsorted, deltaSortedAsc, deltaSortedDesc));
 
         /* Вывод в таблицы консоль */
         //System.out.println(amountOfTerms + "\t\t" + deltaUnsorted + "\t\t" + deltaSortedAsc + "\t\t" + deltaSortedDesc);
@@ -114,25 +116,71 @@ public class Main {
         //System.out.println("Приближенное значение суммы (числа взяты в порядке убывания) =\t\t" + sumSortedDesc);
     }
 
+    /**
+     * Процедура определения минимума из трех вещественных чисел
+     * @param a первое число
+     * @param b второе число
+     * @param c третье число
+     * @return номер минимального из чисел
+     */
+    public static int numOfMin(double a, double b, double c) {
+        if (a <= b && a <= c)
+            return 1;
+        else if (b <= c && b <= a)
+            return 2;
+        return 3;
+    }
+
+    /**
+     * Процедура для подсчета количества случаев возникновения наименьшей погрешности для каждого из порядком слагаемых чисел (случайный, по возрастанию, по убыванию)
+     * с последующей их записью в последнюю строку таблицы
+     * @param data двумерный массив, отвечающий за ячейки таблицы результатов
+     * @param begin начальное количество слагаемых
+     * @param end конечное количество слагаемых
+     * @param step шаг
+     */
+    public static void commitBestResult(String[][] data, int begin, int end, int step) {
+        for (int i = 0; i < 5; i++)
+            data[(end-begin)/step+1][i] = "";
+
+        int[] counters = {0, 0, 0};
+
+        for (int i = 0; i < (end-begin)/step+1; i++) {
+            if (Integer.parseInt(data[i][4]) == 1)
+                counters[0]++;
+            else if (Integer.parseInt(data[i][4]) == 2)
+                counters[1]++;
+            else
+                counters[2]++;
+        }
+
+        for (int i = 1; i <= 3; i++) {
+            data[(end-begin)/step+1][i] = "Наилучший результат: " + String.valueOf(counters[i-1]) + " раз(а)";
+        }
+    }
+
     public static void main(String[] args) {
 
         /** Диапазон значений, из которого генерируются числа для массива */
         double a = 0.0d;
-        double b = 20.0d;
+        double b = 50.0d;
 
         /** Переменные цикла */
-        int begin = 50;
-        int end = 1000;
-        int step = 50;
+        int begin = 100;
+        int end = 3000;
+        int step = 100;
 
         /** Инициализация шапки и ячеек таблицы */
-        String[] col = {"Число слагаемых в сумме", "deltaUnsorted", "deltaSortedAsc", "deltaSortedDesc"};
-        String[][] data = new String[(end-begin)/step+1][col.length];
+        String[] col = {"Число слагаемых в сумме", "Случайный порядок", "В порядке возрастания", "В порядке убывания", "Номер столбца с min погрешностью"};
+        String[][] data = new String[(end-begin)/step+2][col.length];
 
         /** Цикл, вызывающий процедуру вычислительного эксперимента для заданного количества слагаемых */
         for (int n = begin, i = 0; n <= end; n += step, i++) {
             experimentSum(a, b, n, i, data);
         }
+
+        /** Подсчет количества случаев возникновения минимальной погрешности для каждого из порядков слагаемых чисел и их запись в таблицу */
+        commitBestResult(data, begin, end, step);
 
         /** Создание таблицы результатов вычислительного эксперимента */
         Table table = new Table(col, data);
